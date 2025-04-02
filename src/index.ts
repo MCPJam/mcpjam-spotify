@@ -4,6 +4,7 @@ import {
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { api } from "./util.js";
 
 // Create an MCP server
 const server = new McpServer({
@@ -11,10 +12,26 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
-// Add an addition tool
-server.tool("add", { a: z.number(), b: z.number() }, async ({ a, b }) => ({
-  content: [{ type: "text", text: String(a + b) }],
-}));
+// Add a Spotify artist search tool
+server.tool("search", { artist: z.string() }, async ({ artist }) => {
+  const results = await api.search(artist, ["artist"]);
+  const artists = results.artists.items.map((artist) => ({
+    name: artist.name,
+    followers: artist.followers.total,
+    popularity: artist.popularity,
+    genres: artist.genres,
+    spotifyUrl: artist.external_urls.spotify,
+  }));
+
+  return {
+    content: [
+      {
+        type: "text",
+        text: JSON.stringify(artists, null, 2),
+      },
+    ],
+  };
+});
 
 // Add a dynamic greeting resource
 server.resource(
