@@ -1,0 +1,9 @@
+{
+  "name": "mapjam-spotify",
+  "version": "1.0.0",
+  "description": "MCP Server for Spotify, built by the MCPJam team.",
+  "main": "index.ts",
+  "repository": "https://github.com/MCPJam/mcpjam-spotify",
+  "author": "MCPJam",
+  "license": "MIT"
+}
